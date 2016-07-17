@@ -101,7 +101,7 @@ class webserverHandler(BaseHTTPRequestHandler, templateHandler):
 						self.end_headers()
 
 					return
-					
+
 
 			if self.path.endswith('/editRestaurant'):
 				self.send_response(301)
