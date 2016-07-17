@@ -2,10 +2,19 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import jinja2
 import os
 import cgi
+from database_setup import Base, Restaurant, MenuItems
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+engine = create_engine('sqlite:///restaurantmenu.db')
+Base.metadata.bind = engine
+DBSession = sessionmaker(bind = engine)
+session = DBSession()
 
 template_dir = os.path.join(os.path.dirname(__file__), 'static/templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
 								autoescape = True)
+
 
 class templateHandler():
 	def write(self, *a, **kw):
@@ -28,8 +37,11 @@ class webserverHandler(BaseHTTPRequestHandler, templateHandler):
 				self.send_header('Content-Type', 'text/html')
 				self.end_headers()
 
-				self.render('restaurants.htm')
-				print output
+				# get restaurants from database
+				restaurants = session.query(Restaurant).all()
+				# debug output
+				print restaurants
+				self.render('restaurants.htm', restaurants = restaurants)
 				return
 
 			if self.path.endswith("/hola"):

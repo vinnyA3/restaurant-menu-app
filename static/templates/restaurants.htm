@@ -3,10 +3,14 @@
 <div class="container">
 {% block content %}
 	<div class="row">
-		<div class="col-md-4 col-md-offset-4 text-center">
-			<h1>Hello There</h1>
+		<div class="col-md-8 col-md-offset-2 text-center">
+			{% for r in restaurants %}
+				<h2>{{r.name}} <span class="edit-restaurant glyphicon glyphicon-pencil
+"><a href="/editRestaurant">edit</a></span></h2>
+			{% endfor %}
 		</div>
 	</div>
+	<br><br><br>
 {% endblock %}
 </div>
 
