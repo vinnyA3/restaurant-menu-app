@@ -44,20 +44,12 @@ class webserverHandler(BaseHTTPRequestHandler, templateHandler):
 				self.render('restaurants.htm', restaurants = restaurants)
 				return
 
-			if self.path.endswith("/hola"):
+			if self.path.endswith("/addRestaurant"):
 				self.send_response(200)
 				self.send_header('Content-Type', 'text/html')
 				self.end_headers()
-
-				output = ""
-				output += "<html><body>&iexcl;Hola!<br><a href='/hello'>Home</a><br><br>"
-				output += "<form method='POST' enctype='multipart/form-data'"
-				output += " action='/hello'><h2>What would you like to say to me?"
-				output += "</h2><input name='message' type='text'><input type="
-				output += "'submit'></form><br></body></html>"
-
-				self.wfile.write(output)
-				print output
+				# Render template
+				self.render('addRestaurant.htm')
 				return
 
 		except IOError:
@@ -66,28 +58,16 @@ class webserverHandler(BaseHTTPRequestHandler, templateHandler):
 
 	def do_POST(self):
 		try:
-			self.send_response(301)
-			self.end_headers()
+			if self.path.endswith('/add')
+				self.send_response(301)
+				self.end_headers()
 
-			ctype, pdict = cgi.parse_header(self.headers.getheader('Content-Type'))
-			if ctype == 'multipart/form-data':
-				fields=cgi.parse_multipart(self.rfile, pdict)
-				messagecontent = fields.get('message')
-
-			output = ""
-			output += "<html><body>"
-			output += " <h2> Okay, how about this: </h2>"
-			output += "<h1> %s </h1>" % messagecontent[0]
-			output += "<html><body><a href='/hello'>Home</a><br><br>"
-			output += "<form method='POST' enctype='multipart/form-data'"
-			output += " action='/hello'><h2>What would you like to say to me?"
-			output += "</h2><input name='message' type='text'><input type="
-			output += "'submit'></form><br>"
-			output += "</body></html>"
-
-			self.wfile.write(output)
-			print output
-			return
+				ctype, pdict = cgi.parse_header(self.headers.getheader('Content-Type'))
+				if ctype == 'multipart/form-data':
+					fields=cgi.parse_multipart(self.rfile, pdict)
+					fieldName = fields.get('name')
+					print fieldName[0]
+					return
 
 		except:
 			pass
