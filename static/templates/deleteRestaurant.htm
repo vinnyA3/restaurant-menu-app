@@ -1,0 +1,12 @@
+{% include "header.htm" %}
+	<div class="container">
+		<div class="col-md-8 col-md-offset-2 text-center">
+			<h2>Are you sure you want to delete:</h2><br>
+			<h3>{{restaurant.name}}</h3>
+			<form class="form-action" method="POST" enctype="multipart/form-data" action="/{{restaurant.id}}/delete">
+				<a href="/restaurants"><button class="btn btn-default">Cancel</button></a>
+				<input type="submit" class="btn btn-danger" value="Delete">
+			</form>
+		</div>
+	</div>
+{% include "footer.htm" %}

@@ -1,0 +1,12 @@
+{% include "header.htm" %}
+	<div class="container">
+		<div class="col-md-8 col-md-offset-2 text-center">
+			<h2>Edit a Restaurant</h2><br>
+			<form class="form-action" method="POST" enctype="multipart/form-data" action="/{{restaurant.id}}/editRestaurant">
+				<label for="name">Restaurant name:</label><br>
+				<input type="form-control" name="name" placeholder="Name" value="{{restaurant.name}}"><br><br>
+				<input type="submit" class="btn btn-primary" value="Submit Changes">
+			</form>
+		</div>
+	</div>
+{% include "footer.htm" %}

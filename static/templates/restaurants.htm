@@ -6,7 +6,8 @@
 		<div class="col-md-8 col-md-offset-2 text-center">
 			{% for r in restaurants %}
 				<h2>{{r.name}} <span class="edit-restaurant glyphicon glyphicon-pencil
-"><a href="/editRestaurant">edit</a></span></h2>
+"><a href="/{{r.id}}/editRestaurant">edit</a></span> <span class="edit-restaurant glyphicon glyphicon-minus"><a href="/{{r.id}}/deleteRestaurant">delete</a></span>
+				</h2>
 			{% endfor %}
 		</div>
 	</div>

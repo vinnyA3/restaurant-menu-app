@@ -52,13 +52,37 @@ class webserverHandler(BaseHTTPRequestHandler, templateHandler):
 				self.render('addRestaurant.htm')
 				return
 
+			if self.path.endswith("/editRestaurant"):
+				# strip the Restaurant id from the url
+				restaurantID = self.path.split("/")[1]
+				self.send_response(200)
+				self.send_header('Content-Type', 'text/html')
+				self.end_headers()
+				# get the Restaurant from the database and pass in name to tmplate
+				db_restaurant = session.query(Restaurant).filter_by(id=restaurantID).one()
+				# Render template
+				self.render('editRestaurant.htm', restaurant = db_restaurant)
+				return
+
+			if self.path.endswith("/deleteRestaurant"):
+				# strip the Restaurant id from the url
+				restaurantID = self.path.split("/")[1]
+				self.send_response(200)
+				self.send_header('Content-Type', 'text/html')
+				self.end_headers()
+				# get the Restaurant from the database and pass in name to tmplate
+				db_restaurant = session.query(Restaurant).filter_by(id=restaurantID).one()
+				# Render template
+				self.render('deleteRestaurant.htm', restaurant = db_restaurant)
+				return
+
 		except IOError:
 			self.send_error(404, "File not found %s" % self.path)
 
 
 	def do_POST(self):
 		try:
-			if self.path.endswith('/add')
+			if self.path.endswith('/addRestaurant'):
 				self.send_response(301)
 				self.end_headers()
 
@@ -66,8 +90,63 @@ class webserverHandler(BaseHTTPRequestHandler, templateHandler):
 				if ctype == 'multipart/form-data':
 					fields=cgi.parse_multipart(self.rfile, pdict)
 					fieldName = fields.get('name')
-					print fieldName[0]
+
+					if fieldName[0] != '':
+						newRestaurant = Restaurant(name=fieldName[0])
+						session.add(newRestaurant)
+						session.commit()
+						self.send_response(301)
+						self.send_header('Content-type', 'text/html')
+						self.send_header('Location', '/restaurants')
+						self.end_headers()
+
 					return
+					
+
+			if self.path.endswith('/editRestaurant'):
+				self.send_response(301)
+				self.end_headers()
+
+				ctype, pdict = cgi.parse_header(self.headers.getheader('Content-Type'))
+				if ctype == 'multipart/form-data':
+					fields=cgi.parse_multipart(self.rfile, pdict)
+					fieldName = fields.get('name')
+					print fieldName
+					restaurantID = self.path.split('/')[1]
+					print "restaurant id: %s" % restaurantID
+					restaurantQuery = session.query(Restaurant).filter_by(id=
+															restaurantID).one()
+
+					if restaurantQuery != []:
+						restaurantQuery.name = fieldName[0]
+						session.add(restaurantQuery)
+						session.commit()
+						self.send_response(301)
+						self.send_header('Content-type', 'text/html')
+						self.send_header('Location', '/restaurants')
+						self.end_headers()
+						return
+
+			if self.path.endswith('/delete'):
+				self.send_response(301)
+				self.end_headers()
+
+				# ctype, pdict = cgi.parse_header(self.headers.getheader('Content-Type'))
+				# if ctype == 'multipart/form-data':
+				#	fields=cgi.parse_multipart(self.rfile, pdict)
+
+				restaurantID = self.path.split('/')[1]
+				print "restaurant id: %s" % restaurantID
+				restaurantQuery = session.query(Restaurant).filter_by(id=
+														restaurantID).one()
+
+				if restaurantQuery != []:
+					session.delete(restaurantQuery)
+					session.commit()
+					self.send_response(301)
+					self.send_header('Content-type', 'text/html')
+					self.send_header('Location', '/restaurants')
+					self.end_headers()
 
 		except:
 			pass
