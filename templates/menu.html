@@ -1,0 +1,24 @@
+{% include "header.html" %}
+
+<div class="container">
+{% block content %}
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1 text-center">
+			<h2>{{restaurant.name}}</h2>
+			<p><a href='{{ url_for('newMenuItem', restaurant_id = restaurant.id) }}'>Add Item</a></p>
+			{% for i in items %}
+				<div style="width: 95%; display: inline-block; padding: 1em; border: 1px solid black; border-radius: 4px; margin: 1em 0em 1em 0em">
+					<p>{{i.name}}</p>
+					<p>{{i.price}}</p>
+					<p>{{i.description}}</p>
+					<span class="edit-restaurant glyphicon glyphicon-pencil"><a href='{{ url_for('editMenuItems', restaurant_id = restaurant.id, menu_id = i.id) }}'>edit</a></span>&nbsp;
+					&nbsp;<span class="edit-restaurant glyphicon glyphicon-minus"><a href="{{url_for('deleteMenuItems', restaurant_id = restaurant.id, menu_id = i.id)}}">delete</a></span>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	<br><br><br>
+{% endblock %}
+</div>
+
+{% include "footer.html" %}
