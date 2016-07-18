@@ -7,7 +7,8 @@
 			<form method="POST" enctype="multipart/form-data" action='{{ url_for('editMenuItems', restaurant_id = restaurant_id, menu_id = menu_id) }}'>
 				<label for="name">Item name:</label><br>
 				<input class="form-control" name="name" placeholder="{{item.name}}"><br>
-				<input type="submit" class="btn btn-success" value="Create">
+				<input type="submit" class="btn btn-success" value="Create">&nbsp;
+				<a class="btn btn-default" href='{{ url_for('restaurantMenu', restaurant_id = restaurant_id) }}'>Cancel</a>
 			</form>
 		</div>
 	</div>
