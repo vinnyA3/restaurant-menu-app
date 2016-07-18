@@ -3,11 +3,14 @@
 <div class="container">
 {% block content %}
 	<div class="row">
-		<div class="col-md-8 col-md-offset-2 text-center">
-			{% for r in restaurants %}
-				<h2>{{r.name}} <span class="edit-restaurant glyphicon glyphicon-pencil
-"><a href="/{{r.id}}/editRestaurant">edit</a></span> <span class="edit-restaurant glyphicon glyphicon-minus"><a href="/{{r.id}}/deleteRestaurant">delete</a></span>
-				</h2>
+		<div class="col-md-10 col-md-offset-1 text-center">
+			<h2>{{restaurant.name}}</h2>
+			{% for i in items %}
+				<div style="width: 95%; margin: 0 auto; padding: 1em; border: 1px solid black; border-radius: 4px; margin: .5em 0em .5em 0em">
+					<p>{{i.name}}</p>
+					<p>{{i.price}}</p>
+					<p>{{i.description}}</p>
+				</div>
 			{% endfor %}
 		</div>
 	</div>
