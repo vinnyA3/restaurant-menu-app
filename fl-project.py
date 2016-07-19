@@ -20,6 +20,28 @@ def restaurantMenuJSON(restaurant_id):
 
 
 @app.route('/')
+@app.route('/restaurants')
+def allRestaurants():
+	# get the restaurants from the database
+	restaurants = session.query(Restaurant).all()
+	# render the template
+	return render_template('allrestaurants.html', restaurants = restaurants)
+
+@app.route('/restaurants/new', methods=['GET','POST'])
+def newRestaurant():
+	if request.method == 'POST':
+		if request.form['name'] != '':
+			newRestaurant = Restaurant(name = request.form['name'])
+			session.add(newRestaurant)
+			session.commit()
+			flash('Restaurant added!')
+			return redirect(url_for('allRestaurants'))
+		else:
+			flash('Restaurant not added. Did you type in a name?')
+			return redirect(url_for('allRestaurants'))
+	else:
+		return render_template('newrestaurant.html')
+
 @app.route('/restaurants/<int:restaurant_id>/')
 def restaurantMenu(restaurant_id):
 	restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
@@ -30,7 +52,13 @@ def restaurantMenu(restaurant_id):
 @app.route('/restaurant/<int:restaurant_id>/new/', methods=['GET','POST'])
 def newMenuItem(restaurant_id):
 	if request.method == 'POST':
-		newItem = MenuItems(name = request.form['name'], restaurant_id = restaurant_id)
+		itemName = request.form['name']
+		itemCourse = request.form['course']
+		itemPrice = request.form['price']
+		itemDescription = request.form['description']
+		newItem = MenuItems(name = itemName, course = itemCourse, price = itemPrice,
+						restaurant_id = restaurant_id, description = itemDescription)
+
 		session.add(newItem)
 		session.commit()
 		flash('New menu item created!')
@@ -43,9 +71,16 @@ def newMenuItem(restaurant_id):
 def editMenuItems(restaurant_id, menu_id):
 	edited_item = session.query(MenuItems).filter_by(id = menu_id).one()
 	if request.method == 'POST':
-		if request.form['name']:
-			edited_name = request.form['name']
-		edited_item.name = edited_name
+
+		editName = request.form['name'] if request.form['name'] != '' else edited_item.name
+		editCourse = request.form['course'] if request.form['course'] != '' else edited_item.course
+		editPrice = request.form['price'] if request.form['price'] != '' else edited_item.price
+		editDescription = request.form['description'] if request.form['description'] != '' else edited_item.description
+
+		edited_item.name = editName
+		edited_item.course = editCourse
+		edited_item.price = editPrice
+		edited_item.description = editDescription
 		session.add(edited_item)
 		session.commit()
 		flash('Item edit successful!')
