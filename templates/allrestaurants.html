@@ -1,0 +1,27 @@
+{% include "header.html" %}
+
+<div class="container">
+{% block content %}
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1 text-center">
+			<h2>Restaurants</h2>
+			{% with messages = get_flashed_messages() %}
+			{% if messages %}
+					{% for message in messages %}
+						<div class="alert alert-success"><strong>{{message}}</strong></div>
+					{% endfor %}
+			{% endif %}
+			{% endwith %}
+			<p><a href='{{ url_for('newRestaurant') }}'>Add Restaurant</a></p>
+			{% for r in restaurants %}
+				<div style="width: 95%; display: inline-block; padding: 1em; border: 1px solid black; border-radius: 4px; margin: 1em 0em 1em 0em">
+					<a href='{{ url_for('restaurantMenu', restaurant_id = r.id) }}'><h3>{{r.name}}</h3></a>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	<br><br><br>
+{% endblock %}
+</div>
+
+{% include "footer.html" %}
