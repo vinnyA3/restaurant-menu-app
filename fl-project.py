@@ -102,6 +102,12 @@ def gconnect():
 	login_session['username'] = data['name']
 	login_session['picture'] = data['picture']
 	login_session['email'] = data['email']
+
+	# see if the user exists, if the user does not, create one
+	if not getUserID(login_session['email']):
+		user_id = createUser(login_session)
+		login_session['user_id'] = user_id
+
 	output = ''
 	output += '<h1>Welcome, '
 	output += login_session['username']
@@ -171,7 +177,8 @@ def newRestaurant():
 
 	if request.method == 'POST':
 		if request.form['name'] != '':
-			newRestaurant = Restaurant(name = request.form['name'])
+			newRestaurant = Restaurant(name = request.form['name'],
+								user_id = login_session['user_id'])
 			session.add(newRestaurant)
 			session.commit()
 			flash('Restaurant added!')
@@ -201,7 +208,8 @@ def newMenuItem(restaurant_id):
 		itemPrice = request.form['price']
 		itemDescription = request.form['description']
 		newItem = MenuItems(name = itemName, course = itemCourse, price = itemPrice,
-						restaurant_id = restaurant_id, description = itemDescription)
+						restaurant_id = restaurant_id, description = itemDescription,
+						user_id = restaurant.user_id)
 
 		session.add(newItem)
 		session.commit()
@@ -254,6 +262,30 @@ def deleteMenuItems(restaurant_id, menu_id):
 
 	else:
 		return render_template('deleteitem.html', restaurant_id = restaurant_id, menu_id = menu_id, item = item_to_delete)
+
+
+# Create User
+def createUser(login_session):
+	newUser = User(name = login_session['username'], email=login_session['email'],
+				picture=login_session['picture'])
+	session.add(newUser)
+	session.commit()
+	# query the created user id
+	user = session.query(User).filter_by(email = login_session['email']).one()
+	return user.id
+
+# get user
+def getUserInfo(user_id):
+	user = session.query(User).filter_by(id = user_id).one()
+	return user
+
+# get user id
+def getUserID(email):
+	try:
+		user = session.query(User).filter_by(email = email).one()
+		return user.id
+	except:
+		return None
 
 
 if __name__ == "__main__":
