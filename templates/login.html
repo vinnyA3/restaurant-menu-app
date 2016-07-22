@@ -1,0 +1,55 @@
+<html>
+	<head>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+		<script src="//apis.google.com/js/platform.js?onload=start" async defer></script>
+	</head>
+	<body>
+		<div id="signinButton">
+			<span class="g-signin"
+				data-scope="openid email"
+				data-clientid="467732135451-9n629b0jh8r855t94laagej2hltavl55.apps.googleusercontent.com"
+				data-redirecturi="postmessage"
+				data-accesstype="offline"
+				data-cookiepolicy="single_host_origin"
+				data-callback="signInCallback"
+				data-approvalprompt="force">
+			</span>
+		</div>
+
+		<div class="result"></div>
+
+		<script>
+			function signInCallback(authResult) {
+				if (authResult['code']) {
+					$('#signinbutton').attr('style', 'display: none');
+					// Send the one-time code to the server, if the server responds, write
+					// a login successful message to the web page and then redirect back to
+					// the main restaurants page
+					$.ajax({
+						type: 'POST',
+						url: '/gconnect?state={{STATE}}',
+						processData: false,
+						contentType: 'application/octet-stream; charset=utf-8',
+						data: authResult['code'],
+						success: function(result) {
+							if (result) {
+								$('.result').html('Login Successful!<br/>' + result + '<br/>Redirecting...')
+								setTimeout(function() {
+									window.location.href="/restaurants"
+								}, 4000);
+							} else if (authResult['error']) {
+								console.log('There was an error: ' + authResult['error']);
+							} else {
+								$('.result').html('Failed to make a server side call. Check your configuration and console.');
+							}
+						},
+						error: function(error) {
+							console.log(error.responseText)
+						}
+					})
+				}
+			};
+
+		</script>
+	</body>
+</html>
